@@ -5,20 +5,25 @@ data WelcomeView = WelcomeView
 
 instance View WelcomeView where
     html WelcomeView = [hsx|
-         <div class="jumbotron">
-              <div style="max-width: 800px; margin-left: auto; margin-right: auto">
-                  <h1 class="display-4">
-                      Reddit Notify
-                  </h1>
+        <div class="jumbotron">
+            <div style="max-width: 800px; margin-left: auto; margin-right: auto">
+                <h1 class="display-4">Reddit Notify</h1>
 
-                  <p class="lead">
-                     Notify When There Is A New Submission On Your Specified Subreddit(s)
-                  </p>
+                <p class="lead">Notify When There Is A New Submission On Your Specified Subreddit(s)</p>
 
-                  <hr class="my-4">
+                <hr class="my-4">
 
-                  <a href="" class="btn btn-outline-dark">Login</a>
-                  <a href="" class="btn btn-outline-dark ml-2">Register</a>
-              </div>
-         </div>
+                {userControls}
+            </div>
+        </div>
 |]
+
+userControls :: Html
+userControls = case currentUserOrNothing of
+    Just currentUser -> [hsx|
+        <a href={DeleteSessionAction} class="js-delete js-delete-no-confirm btn btn-outline-danger">Logout</a>
+    |]
+    Nothing -> [hsx|
+        <a href={NewSessionAction} class="btn btn-outline-dark">Login</a>
+        <a href={NewUserAction} class="btn btn-outline-dark ml-2">Register</a>
+    |]
