@@ -1,4 +1,5 @@
 module Web.View.Static.Welcome where
+
 import Web.View.Prelude
 
 data WelcomeView = WelcomeView
@@ -13,17 +14,8 @@ instance View WelcomeView where
 
                 <hr class="my-4">
 
-                {userControls}
+                <a href={NewSessionAction} class="btn btn-outline-dark">Login</a>
+                <a href={NewUserAction} class="btn btn-outline-dark ml-2">Register</a>
             </div>
         </div>
-|]
-
-userControls :: Html
-userControls = case currentUserOrNothing of
-    Just currentUser -> [hsx|
-        <a href={DeleteSessionAction} class="js-delete js-delete-no-confirm btn btn-outline-danger">Logout</a>
-    |]
-    Nothing -> [hsx|
-        <a href={NewSessionAction} class="btn btn-outline-dark">Login</a>
-        <a href={NewUserAction} class="btn btn-outline-dark ml-2">Register</a>
     |]

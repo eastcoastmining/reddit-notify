@@ -22,3 +22,11 @@ INSERT INTO public.users (id, email, password_hash, locked_at, failed_login_atte
 ALTER TABLE public.users ENABLE TRIGGER ALL;
 
 
+ALTER TABLE public.subreddits DISABLE TRIGGER ALL;
+
+INSERT INTO public.subreddits (id, json_url, url, user_id) VALUES ('07b5921c-dc55-4e1a-8898-b1b0d02940c3', 'https://www.reddit.com/r/CryptoMiningSetups/new.json', 'https://www.reddit.com/r/CryptoMiningSetups/', '9094889e-eebb-4599-8129-b4690fea653f');
+
+
+ALTER TABLE public.subreddits ENABLE TRIGGER ALL;
+
+

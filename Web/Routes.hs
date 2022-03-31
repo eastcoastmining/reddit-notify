@@ -15,4 +15,6 @@ instance CanRoute StaticController where
 
 instance AutoRoute SessionsController
 instance AutoRoute UsersController
+instance AutoRoute DashboardController
+instance AutoRoute SubredditsController
 -- Generator Marker

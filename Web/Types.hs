@@ -27,3 +27,14 @@ data UsersController
     = NewUserAction
     | CreateUserAction
     deriving (Eq, Show, Data)
+
+data DashboardController
+    = DashboardAction { userId :: !(Id User) }
+    deriving (Eq, Show, Data)
+
+data SubredditsController
+    = SubredditsAction { userId :: !(Id User) }
+    | NewSubredditAction { userId :: !(Id User) }
+    | CreateSubredditAction
+    | DeleteSubredditAction { subredditId :: !(Id Subreddit) }
+    deriving (Eq, Show, Data)
