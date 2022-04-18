@@ -29,10 +29,11 @@ CREATE TABLE subreddit_posts (
     id UUID DEFAULT uuid_generate_v4() PRIMARY KEY NOT NULL,
     subreddit_id UUID NOT NULL,
     title TEXT NOT NULL,
-    url TEXT NOT NULL UNIQUE,
-    created_at TIMESTAMP WITH TIME ZONE NOT NULL
+    created_at TIMESTAMP WITH TIME ZONE NOT NULL,
+    subreddit_name TEXT NOT NULL,
+    permalink TEXT NOT NULL UNIQUE
 );
 CREATE INDEX subreddit_posts_subreddit_id_index ON subreddit_posts (subreddit_id);
-ALTER TABLE subreddit_posts ADD CONSTRAINT subreddit_posts_ref_subreddit_id FOREIGN KEY (subreddit_id) REFERENCES subreddits (id) ON DELETE NO ACTION;
-ALTER TABLE subreddit_posts_sync_jobs ADD CONSTRAINT subreddit_posts_sync_jobs_ref_subreddit_id FOREIGN KEY (subreddit_id) REFERENCES subreddits (id) ON DELETE NO ACTION;
+ALTER TABLE subreddit_posts ADD CONSTRAINT subreddit_posts_ref_subreddit_id FOREIGN KEY (subreddit_id) REFERENCES subreddits (id) ON DELETE CASCADE;
+ALTER TABLE subreddit_posts_sync_jobs ADD CONSTRAINT subreddit_posts_sync_jobs_ref_subreddit_id FOREIGN KEY (subreddit_id) REFERENCES subreddits (id) ON DELETE CASCADE;
 ALTER TABLE subreddits ADD CONSTRAINT subreddits_ref_user_id FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE;

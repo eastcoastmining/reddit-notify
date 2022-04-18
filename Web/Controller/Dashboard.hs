@@ -7,5 +7,16 @@ instance Controller DashboardController where
     beforeAction = do
         ensureIsUser
 
-    action DashboardAction { .. } = do
-        render DashboardView
+    action DashboardAction { .. } = autoRefresh do
+        subreddits <-
+            query @Subreddit
+                |> filterWhere (#userId, userId)
+                |> fetch
+
+        posts <-
+            query @SubredditPost
+                |> filterWhereIn (#subredditId, ids subreddits)
+                |> orderByDesc #createdAt
+                |> fetch
+
+        render DashboardView { .. }

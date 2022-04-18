@@ -18,7 +18,7 @@ data AboutSubreddit
 Json.deriveJSON Json.defaultOptions ''AboutSubreddit
 
 data SubredditListing
-    = SubredditListing { title :: Text, url :: Text, createdAt :: UTCTime }
+    = SubredditListing { title :: Text, permalink :: Text, createdAt :: UTCTime, subredditName :: Text }
     deriving (Eq, Show, Data)
 Json.deriveJSON Json.defaultOptions ''SubredditListing
 
@@ -34,8 +34,9 @@ subredditFetchListings subredditJsonEndpoint = do
                     children: List {
                         data: {
                             title: Text,
-                            url: Text,
-                            created_utc: NominalDiffTime
+                            permalink: Text,
+                            created_utc: NominalDiffTime,
+                            subreddit_name_prefixed: Text
                         }
                     }
                 }
@@ -45,10 +46,11 @@ subredditFetchListings subredditJsonEndpoint = do
                         |> map (\listing ->
                                     let
                                         title = [Json.get| listing.title |]
-                                        url = [Json.get| listing.url |]
+                                        permalink = [Json.get| listing.permalink |]
                                         createdAt = [Json.get| listing.created_utc |] |> posixSecondsToUTCTime
+                                        subredditName = [Json.get| listing.subreddit_name_prefixed |]
                                     in
-                                        SubredditListing { title, url, createdAt }
+                                        SubredditListing { title, permalink, createdAt, subredditName }
                                 )
             pure listings
 

@@ -11,10 +11,11 @@ instance Job SubredditPostsSyncJob where
         posts <- mapM (\listing ->
                         newRecord @SubredditPost
                             |> set #title (get #title listing)
-                            |> set #url (get #url listing)
+                            |> set #permalink (get #permalink listing)
                             |> set #createdAt (get #createdAt listing)
+                            |> set #subredditName (get #subredditName listing)
                             |> set #subredditId (get #id subreddit)
-                            |> validateIsUnique #url
+                            |> validateIsUnique #permalink
                             >>= ifValid \case
                                 Left post  -> pure post
                                 Right post -> createRecord post
