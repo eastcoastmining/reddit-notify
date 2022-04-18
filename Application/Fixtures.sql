@@ -29,3 +29,17 @@ ALTER TABLE public.subreddits DISABLE TRIGGER ALL;
 ALTER TABLE public.subreddits ENABLE TRIGGER ALL;
 
 
+ALTER TABLE public.subreddit_posts DISABLE TRIGGER ALL;
+
+
+
+ALTER TABLE public.subreddit_posts ENABLE TRIGGER ALL;
+
+
+ALTER TABLE public.subreddit_posts_sync_jobs DISABLE TRIGGER ALL;
+
+
+
+ALTER TABLE public.subreddit_posts_sync_jobs ENABLE TRIGGER ALL;
+
+

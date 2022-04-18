@@ -34,11 +34,13 @@ instance Controller SubredditsController where
                     subreddit <- subreddit
                         |> set #jsonUrl jsonUrl
                         |> createRecord
+                    subredditSyncJob <- newSubredditSyncJob subreddit
                     setSuccessMessage "Subreddit added"
                     redirectTo $ SubredditsAction currentUserId
 
     action DeleteSubredditAction { subredditId } = do
         subreddit <- fetch subredditId
+        deleteJobs <- deleteAllSubredditSyncJobs subreddit
         deleteRecord subreddit
         setSuccessMessage "Subreddit deleted"
         redirectTo $ SubredditsAction currentUserId
@@ -56,3 +58,19 @@ validateSubredditExists subredditUrl = do
         if subredditExists
         then pure Success
         else pure $ Failure "This subreddit does not exist"
+
+newSubredditSyncJob :: _ => Subreddit -> IO ()
+newSubredditSyncJob subreddit = do
+    newJob <-
+        newRecord @SubredditPostsSyncJob
+            |> set #subredditId (get #id subreddit)
+            |> createRecord
+    pure ()
+
+deleteAllSubredditSyncJobs :: _ => Subreddit -> IO ()
+deleteAllSubredditSyncJobs subreddit = do
+    jobs <- query @SubredditPostsSyncJob
+        |> filterWhere (#subredditId, get #id subreddit)
+        |> fetch
+    _ <- deleteRecords jobs
+    pure ()

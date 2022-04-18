@@ -1,13 +1,13 @@
-module Application.Reddit
-( doesSubredditExist
-, subredditNewListingsJsonUrl
-) where
+module Application.Reddit where
 
 import Control.Exception
-import Control.Lens
-import qualified Data.Aeson as Json
+import Control.Lens hiding ((|>))
+import qualified Data.Aeson as Json hiding (Object)
+import Data.Aeson.Lens (key, nth)
+import qualified Data.Aeson.Schema as Json
 import qualified Data.Aeson.TH as Json
 import Data.List
+import Data.Time.Clock.POSIX
 import IHP.Prelude
 import Network.HTTP.Client (HttpException)
 import Network.Wreq
@@ -16,6 +16,41 @@ data AboutSubreddit
     = AboutSubreddit { kind :: Text }
     deriving (Eq, Show, Data)
 Json.deriveJSON Json.defaultOptions ''AboutSubreddit
+
+data SubredditListing
+    = SubredditListing { title :: Text, url :: Text, createdAt :: UTCTime }
+    deriving (Eq, Show, Data)
+Json.deriveJSON Json.defaultOptions ''SubredditListing
+
+subredditFetchListings :: Text -> IO [SubredditListing]
+subredditFetchListings subredditJsonEndpoint = do
+    maybeResponse <- try $ Network.Wreq.get (cs subredditJsonEndpoint)
+    case maybeResponse of
+        Left (e :: HttpException) -> throw e
+        Right response -> do
+            object <- either fail return $ Json.eitherDecode (response ^. responseBody)
+            let deserialized = (object :: Json.Object [Json.schema|{
+                data: {
+                    children: List {
+                        data: {
+                            title: Text,
+                            url: Text,
+                            created_utc: NominalDiffTime
+                        }
+                    }
+                }
+            }|])
+            let listings =
+                    [Json.get| deserialized.data.children[].data |]
+                        |> map (\listing ->
+                                    let
+                                        title = [Json.get| listing.title |]
+                                        url = [Json.get| listing.url |]
+                                        createdAt = [Json.get| listing.created_utc |] |> posixSecondsToUTCTime
+                                    in
+                                        SubredditListing { title, url, createdAt }
+                                )
+            pure listings
 
 doesSubredditExist :: Text -> IO Bool
 doesSubredditExist subredditUrl = do
