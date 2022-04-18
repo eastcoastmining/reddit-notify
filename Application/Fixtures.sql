@@ -16,7 +16,7 @@ SET SESSION AUTHORIZATION DEFAULT;
 
 ALTER TABLE public.users DISABLE TRIGGER ALL;
 
-INSERT INTO public.users (id, email, password_hash, locked_at, failed_login_attempts) VALUES ('9094889e-eebb-4599-8129-b4690fea653f', 'admin@eastcoastmining.com', 'sha256|17|TvdopjviQyzNwSfRrQooMw==|gAhmr0PTKnGFth9UuE6t9CSRGSrabsuW5EGa57Avzas=', NULL, 0);
+INSERT INTO public.users (id, email, password_hash, locked_at, failed_login_attempts) VALUES ('bbd1a1f9-2dfb-4ada-b7e6-f7afcc7b9693', 'test@example.com', 'sha256|17|5JDYwvpZpMMuGf9rL41h0Q==|eJfBx7pSD4slMkziQq0XJwh491R/H/FYhG20W3MWx3Q=', NULL, 0);
 
 
 ALTER TABLE public.users ENABLE TRIGGER ALL;
@@ -24,7 +24,6 @@ ALTER TABLE public.users ENABLE TRIGGER ALL;
 
 ALTER TABLE public.subreddits DISABLE TRIGGER ALL;
 
-INSERT INTO public.subreddits (id, json_url, url, user_id) VALUES ('07b5921c-dc55-4e1a-8898-b1b0d02940c3', 'https://www.reddit.com/r/CryptoMiningSetups/new.json', 'https://www.reddit.com/r/CryptoMiningSetups/', '9094889e-eebb-4599-8129-b4690fea653f');
 
 
 ALTER TABLE public.subreddits ENABLE TRIGGER ALL;

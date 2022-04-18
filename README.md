@@ -7,3 +7,8 @@
 Check out IHP Guide
 
 - https://ihp.digitallyinduced.com/Guide/
+
+### Default User
+
+- test@example.com
+- bEa#jaH^9o7542m7&\*@6
