@@ -19,4 +19,6 @@ instance Controller DashboardController where
                 |> orderByDesc #createdAt
                 |> fetch
 
+        todaysDate <- getCurrentTime
+
         render DashboardView { .. }

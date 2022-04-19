@@ -2,35 +2,41 @@ module Web.View.Dashboard where
 
 import Web.View.Prelude
 
-data DashboardView = DashboardView { posts :: [SubredditPost] }
+data DashboardView = DashboardView { posts :: [SubredditPost], todaysDate :: UTCTime }
 
 instance View DashboardView where
     html DashboardView { .. } = [hsx|
         {navigation}
         {renderPosts posts}
     |]
+        where
+            renderPosts :: [SubredditPost] -> Html
+            renderPosts []    = [hsx|
+                <ul class="list-group">
+                    <li class="list-group-item">
+                        No new posts
+                    </li>
+                </ul>
+            |]
+            renderPosts posts = [hsx|
+                <ul class="list-group">
+                    {forEach posts renderPost}
+                </ul>
+            |]
 
-renderPosts :: [SubredditPost] -> Html
-renderPosts []    = [hsx|
-    <ul class="list-group">
-        <li class="list-group-item">
-            No new posts
-        </li>
-    </ul>
-|]
-renderPosts posts = [hsx|
-    <ul class="list-group">
-        {forEach posts renderPost}
-    </ul>
-|]
-
-renderPost :: SubredditPost -> Html
-renderPost post = [hsx|
-    <li class="list-group-item">
-        <p>{get #subredditName post}{" - " :: Text}<small> {dateTime $ get #createdAt post}</small></p>
-        <a target="_blank" href={fullPostUrl $ get #permalink post}>{get #title post}</a>
-    </li>
-|]
+            renderPost :: SubredditPost -> Html
+            renderPost post = [hsx|
+                <li class={classes [("list-group-item", True), postColorizer]}>
+                    <p>{get #subredditName post}{" - " :: Text}<small> {dateTime $ get #createdAt post}</small></p>
+                    <a target="_blank" href={fullPostUrl $ get #permalink post}>{get #title post}</a>
+                </li>
+            |]
+                where
+                    isCreatedToday = isPostCreatedToday todaysDate post
+                    postColorizer =
+                        if isCreatedToday
+                        then "border-success border-right-0 border-top-0 border-bottom-0"
+                        else "border-warning border-right-0 border-top-0 border-bottom-0"
 
 navigation :: Html
 navigation = [hsx|
@@ -45,3 +51,11 @@ navigation = [hsx|
 
 fullPostUrl :: Text -> Text
 fullPostUrl permalink = "https://www.reddit.com" <> permalink
+
+isPostCreatedToday :: UTCTime -> SubredditPost -> Bool
+isPostCreatedToday todaysDate post =
+    let
+        createdAt = get #createdAt post
+        diff = diffUTCTime todaysDate createdAt
+    in
+        diff <= nominalDay
