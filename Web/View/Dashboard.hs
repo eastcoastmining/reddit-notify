@@ -28,10 +28,11 @@ instance View DashboardView where
             renderPost post = [hsx|
                 <li class={classes [("list-group-item", True), postColorizer]}>
                     <p>{get #subredditName post}{" - " :: Text}<small> {dateTime $ get #createdAt post}</small></p>
-                    <a target="_blank" href={fullPostUrl $ get #permalink post}>{get #title post}</a>
+                    <a class={classes [("post-visited", postVisited)]} target="_blank" href={VisitPost (get #id post)}>{get #title post}</a>
                 </li>
             |]
                 where
+                    postVisited = get #visitedPost post
                     isCreatedToday = isPostCreatedToday todaysDate post
                     postColorizer =
                         if isCreatedToday
@@ -48,9 +49,6 @@ navigation = [hsx|
         </div>
     </nav>
 |]
-
-fullPostUrl :: Text -> Text
-fullPostUrl permalink = "https://www.reddit.com" <> permalink
 
 isPostCreatedToday :: UTCTime -> SubredditPost -> Bool
 isPostCreatedToday todaysDate post =

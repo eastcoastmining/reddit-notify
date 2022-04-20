@@ -30,6 +30,7 @@ data UsersController
 
 data DashboardController
     = DashboardAction { userId :: !(Id User) }
+    | VisitPost { subredditPostId :: !(Id SubredditPost) }
     deriving (Eq, Show, Data)
 
 data SubredditsController

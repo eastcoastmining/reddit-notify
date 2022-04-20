@@ -31,7 +31,8 @@ CREATE TABLE subreddit_posts (
     title TEXT NOT NULL,
     created_at TIMESTAMP WITH TIME ZONE NOT NULL,
     subreddit_name TEXT NOT NULL,
-    permalink TEXT NOT NULL UNIQUE
+    permalink TEXT NOT NULL UNIQUE,
+    visited_post BOOLEAN DEFAULT false NOT NULL
 );
 CREATE INDEX subreddit_posts_subreddit_id_index ON subreddit_posts (subreddit_id);
 ALTER TABLE subreddit_posts ADD CONSTRAINT subreddit_posts_ref_subreddit_id FOREIGN KEY (subreddit_id) REFERENCES subreddits (id) ON DELETE CASCADE;

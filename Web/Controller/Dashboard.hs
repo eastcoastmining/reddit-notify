@@ -22,3 +22,16 @@ instance Controller DashboardController where
         todaysDate <- getCurrentTime
 
         render DashboardView { .. }
+
+    action VisitPost { subredditPostId } = do
+        subredditPost <- fetch subredditPostId
+        subredditPost <-
+            subredditPost
+                |> set #visitedPost True
+                |> updateRecord
+        let postUrl = fullPostUrl (get #permalink subredditPost)
+        redirectToUrl postUrl
+
+
+fullPostUrl :: Text -> Text
+fullPostUrl permalink = "https://www.reddit.com" <> permalink
