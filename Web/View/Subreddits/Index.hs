@@ -16,6 +16,7 @@ instance View IndexView where
                     <tr>
                         <th>Subreddit</th>
                         <th></th>
+                        <th></th>
                     </tr>
                 </thead>
                 <tbody>{forEach subreddits renderSubreddit}</tbody>
@@ -34,7 +35,12 @@ renderSubreddit :: Subreddit -> Html
 renderSubreddit subreddit = [hsx|
     <tr>
         <td><a href={get #url subreddit} target="_blank">{get #url subreddit}</a></td>
-        <td><a href={DeleteSubredditAction (get #id subreddit)} class="js-delete text-muted">Delete</a></td>
+        <td>{triggerSyncForm subreddit}</td>
+        <td>
+            <button class="btn btn-secondary">
+                <a href={DeleteSubredditAction (get #id subreddit)} class="js-delete text-white">Delete</a>
+            </button>
+        </td>
     </tr>
 |]
 
@@ -51,3 +57,10 @@ updateConfigForm = [hsx|
 |]
     where
         daysAfterPostsDeleted = currentUser |> get #daysAfterPostsDeleted
+
+triggerSyncForm :: Subreddit -> Html
+triggerSyncForm subreddit = [hsx|
+<form class="d-inline" method="POST" action={SyncSubredditAction (get #id subreddit)}>
+    <button type="submit" class="btn btn-secondary">Trigger Sync</button>
+</form>
+|]

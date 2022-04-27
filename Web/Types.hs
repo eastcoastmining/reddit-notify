@@ -39,4 +39,5 @@ data SubredditsController
     | NewSubredditAction { userId :: !(Id User) }
     | CreateSubredditAction
     | DeleteSubredditAction { subredditId :: !(Id Subreddit) }
+    | SyncSubredditAction { subredditId :: !(Id Subreddit) }
     deriving (Eq, Show, Data)

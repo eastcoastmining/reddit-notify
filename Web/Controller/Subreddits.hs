@@ -45,6 +45,12 @@ instance Controller SubredditsController where
         setSuccessMessage "Subreddit deleted"
         redirectTo $ SubredditsAction currentUserId
 
+    action SyncSubredditAction { subredditId } = do
+        subreddit <- fetch subredditId
+        _ <- newSubredditSyncJob subreddit
+        setSuccessMessage "Subreddit Sync Scheduled"
+        redirectTo $ SubredditsAction currentUserId
+
 buildSubreddit subreddit = subreddit
     |> fill @'["url"]
 
