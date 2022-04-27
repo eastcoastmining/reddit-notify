@@ -26,6 +26,7 @@ type instance CurrentUserRecord = User
 data UsersController
     = NewUserAction
     | CreateUserAction
+    | UpdateUserConfigAction
     deriving (Eq, Show, Data)
 
 data DashboardController

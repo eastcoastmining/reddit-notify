@@ -8,6 +8,8 @@ instance View IndexView where
     html IndexView { .. } = [hsx|
         {breadcrumb}
 
+        {updateConfigForm}
+
         <div class="table-responsive">
             <table class="table">
                 <thead>
@@ -35,3 +37,17 @@ renderSubreddit subreddit = [hsx|
         <td><a href={DeleteSubredditAction (get #id subreddit)} class="js-delete text-muted">Delete</a></td>
     </tr>
 |]
+
+updateConfigForm :: Html
+updateConfigForm = [hsx|
+<form class="form-inline" method="POST" action={UpdateUserConfigAction}>
+    <input type="hidden" id="user_id" name="user_id" value={inputValue (get #id currentUser)}>
+
+    <label for="daysAfterPostsDeleted" class="m-2">Days After Old Posts Deleted</label>
+    <input type="number" class="form-control m-2 mr-sm-2" id="daysAfterPostsDeleted" name="daysAfterPostsDeleted" value={inputValue daysAfterPostsDeleted}>
+
+    <button type="submit" class="btn btn-primary m-2">Update</button>
+</form>
+|]
+    where
+        daysAfterPostsDeleted = currentUser |> get #daysAfterPostsDeleted

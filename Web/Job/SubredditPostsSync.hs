@@ -29,4 +29,7 @@ instance Job SubredditPostsSyncJob where
                 |> set #subredditId (get #id subreddit)
                 |> set #runAt inTwoMinutes
                 |> createRecord
+
+        -- Job To Delete Old Subreddits Posts
+        _ <- newRecord @SubredditPostsDeleteJob |> create
         pure ()
